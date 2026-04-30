@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>登录 - SOC平台</title>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+background:#0b1220;
+font-family:Arial;
+color:#d8e3ff;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+/* 卡片 */
+.card{
+width:380px;
+background:#121c2f;
+padding:35px;
+border-radius:16px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+/* 标题 */
+h2{
+text-align:center;
+margin-bottom:25px;
+color:#4ea1ff;
+}
+
+/* 输入框 */
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:none;
+border-radius:10px;
+background:#16243c;
+color:white;
+outline:none;
+}
+
+/* 按钮 */
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#2f7cff;
+color:white;
+cursor:pointer;
+font-size:15px;
+margin-top:5px;
+}
+
+button:hover{
+background:#5193ff;
+}
+
+/* 底部链接 */
+.link{
+text-align:center;
+margin-top:15px;
+font-size:13px;
+color:#8ba5d7;
+cursor:pointer;
+}
+
+.link:hover{
+color:#4ea1ff;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>系统登录</h2>
+
+<input id="login_user" placeholder="用户名">
+<input id="login_pass" type="password" placeholder="密码">
+
+<button onclick="login()">登录</button>
+
+<div class="link" onclick="goRegister()">
+没有账号？去注册 →
+</div>
+
+</div>
+
+
+<script>
+
+function login(){
+
+fetch("/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+username:document.getElementById("login_user").value,
+password:document.getElementById("login_pass").value
+})
+})
+.then(r=>r.json())
+.then(data=>{
+
+alert(data.msg);
+
+if(data.msg==="登录成功"){
+window.location.href="/";
+}
+
+});
+
+}
+
+
+function goRegister(){
+window.location.href="/register_page";
+}
+
+</script>
+
+</body>
+</html>

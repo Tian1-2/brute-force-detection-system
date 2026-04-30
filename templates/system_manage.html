@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>监测源管理</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#0b1220;
+color:#d8e3ff;
+}
+
+.container{
+display:flex;
+height:100vh;
+}
+
+/* 左侧导航 */
+.sidebar{
+width:240px;
+background:#121c2f;
+padding:30px 20px;
+border-right:1px solid #22304a;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+margin-bottom:40px;
+color:#4ea1ff;
+}
+
+.menu-item{
+padding:15px;
+margin-bottom:12px;
+background:#16243c;
+border-radius:10px;
+cursor:pointer;
+}
+
+.menu-item:hover{
+background:#1e3559;
+}
+
+.menu-item.active{
+background:#244d88;
+}
+
+.menu-item a{
+color:white;
+text-decoration:none;
+display:block;
+}
+
+
+/* 主区域 */
+.main{
+flex:1;
+padding:30px;
+overflow:auto;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.panel{
+background:#121c2f;
+border-radius:18px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 0 10px rgba(0,0,0,.25);
+}
+
+.panel h3{
+margin-bottom:20px;
+}
+
+
+/* 表单 */
+.form-row{
+display:flex;
+gap:20px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+input{
+background:#16243c;
+border:none;
+padding:12px 15px;
+color:white;
+border-radius:8px;
+min-width:250px;
+}
+
+button{
+background:#2f7cff;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#4b92ff;
+}
+
+
+
+/* 卡片统计 */
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:#121c2f;
+padding:25px;
+border-radius:16px;
+}
+
+.card-title{
+font-size:14px;
+color:#8ba5d7;
+}
+
+.card-value{
+margin-top:10px;
+font-size:34px;
+font-weight:bold;
+}
+
+
+
+/* 表格 */
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#1b2a44;
+padding:14px;
+}
+
+td{
+padding:14px;
+border-bottom:1px solid #22304a;
+}
+
+tr:hover{
+background:#17253d;
+}
+
+.status-online{
+color:#5bff8b;
+font-weight:bold;
+}
+
+.delete-btn{
+background:#d9534f;
+}
+
+.delete-btn:hover{
+background:#e86b67;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<!-- 左导航 -->
+<div class="sidebar">
+
+<div class="logo">
+SOC监测平台
+</div>
+
+<div class="menu-item">
+<a href="/">
+🏠 监测总览
+</a>
+</div>
+
+<div class="menu-item active">
+<a href="/system_manage">
+📥 监测源管理
+</a>
+</div>
+
+
+<div class="menu-item">
+    <a href="/logout"
+       style="color:white;text-decoration:none;">
+        ⚙ 安全退出
+    </a>
+</div>
+
+</div>
+
+
+
+<!-- 主区 -->
+<div class="main">
+
+<div class="topbar">
+<h2>
+监测源接入管理
+</h2>
+</div>
+
+
+
+<!-- 指标 -->
+<div class="cards">
+
+<div class="card">
+<div class="card-title">
+接入系统数
+</div>
+<div class="card-value" id="sys_count">
+0
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">
+在线监测源
+</div>
+<div class="card-value">
+100%
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">
+日志采集状态
+</div>
+<div class="card-value">
+正常
+</div>
+</div>
+
+</div>
+
+
+
+<!-- 接入表单 -->
+<div class="panel">
+
+<h3>
+新增监测源接入
+</h3>
+
+<div class="form-row">
+
+<input
+id="system_name"
+placeholder="输入系统名称"
+/>
+
+<input
+type="file"
+id="log_file"
+/>
+
+<button onclick="addSystem()">
+接入系统
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- 系统列表 -->
+<div class="panel">
+
+<h3>
+已接入监测源
+</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>系统名称</th>
+<th>日志文件</th>
+<th>状态</th>
+<th>操作</th>
+</tr>
+</thead>
+
+<tbody id="system_table">
+</tbody>
+
+</table>
+
+</div>
+
+
+</div>
+</div>
+
+
+
+<script>
+
+function loadSystems(){
+
+fetch("/systems_manage_data")
+.then(res=>res.json())
+.then(data=>{
+
+let table=
+document.getElementById(
+"system_table"
+);
+
+table.innerHTML="";
+
+document.getElementById(
+"sys_count"
+).innerText=data.length;
+
+
+data.forEach(s=>{
+
+table.innerHTML += `
+<tr>
+
+<td>${s.id}</td>
+
+<td>${s.system_name}</td>
+
+<td>${s.log_file}</td>
+
+<td>
+<span class='status-online'>
+${s.status}
+</span>
+</td>
+
+<td>
+
+<button
+class="delete-btn"
+onclick="
+deleteSystem(${s.id})
+">
+删除
+</button>
+
+</td>
+
+</tr>
+`;
+
+});
+
+});
+
+}
+
+
+
+function addSystem(){
+
+let form=
+new FormData();
+
+form.append(
+"name",
+document.getElementById(
+"system_name"
+).value
+);
+
+form.append(
+"file",
+document.getElementById(
+"log_file"
+).files[0]
+);
+
+
+fetch(
+"/add_system",
+{
+method:"POST",
+body:form
+}
+)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+alert(data.msg);
+
+loadSystems();
+
+});
+
+}
+
+
+
+function deleteSystem(id){
+
+if(!confirm("确认删除该监测源？"))
+return;
+
+fetch(
+`/delete_system/${id}`
+)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+alert(data.msg);
+
+loadSystems();
+
+});
+
+}
+
+
+
+loadSystems();
+
+</script>
+
+</body>
+</html>

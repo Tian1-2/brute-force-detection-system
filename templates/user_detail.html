@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户风险画像</title>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+    background:#0b1220;
+    color:#d8e3ff;
+    font-family:Arial;
+}
+
+.log-item{
+    display:flex;
+    gap:12px;
+    padding:10px;
+    border-bottom:1px solid #1e2a44;
+    align-items:center;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+}
+
+.time{
+    color:#8ba5d7;
+    width:180px;
+}
+
+.ip{
+    color:#d8e3ff;
+    width:160px;
+}
+
+.status{
+    color:#4ea1ff;
+}
+
+#chart{
+    background:#121c2f;
+    border-radius:12px;
+    padding:10px;
+}
+
+/* 布局 */
+
+.container{
+display:flex;
+height:100vh;
+}
+
+
+/* 左导航 */
+
+.sidebar{
+width:240px;
+background:#121c2f;
+padding:30px 20px;
+border-right:1px solid #22304a;
+}
+
+.logo{
+font-size:22px;
+font-weight:bold;
+margin-bottom:40px;
+color:#4ea1ff;
+}
+
+.menu-item{
+padding:15px;
+margin-bottom:12px;
+background:#16243c;
+border-radius:10px;
+}
+
+.menu-item.active{
+background:#244d88;
+}
+
+
+/* 主区 */
+
+.main{
+flex:1;
+padding:25px;
+overflow:auto;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.back-btn{
+background:#2f7cff;
+color:white;
+padding:10px 16px;
+border-radius:8px;
+text-decoration:none;
+}
+
+.back-btn:hover{
+background:#5193ff;
+}
+
+
+/* 卡片 */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:#121c2f;
+padding:25px;
+border-radius:16px;
+}
+
+.card-title{
+font-size:14px;
+color:#8ba5d7;
+}
+
+.card-value{
+margin-top:12px;
+font-size:32px;
+font-weight:bold;
+}
+
+
+/* 双列 */
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.panel{
+background:#121c2f;
+border-radius:16px;
+padding:20px;
+}
+
+.panel h3{
+margin-bottom:18px;
+}
+
+#chart{
+height:420px;
+}
+
+#timeline{
+background:#0f1727;
+padding:18px;
+border-radius:12px;
+
+height:520px;          /* 固定高度 */
+overflow-y:auto;       /* 只纵向滚动 */
+overflow-x:hidden;
+
+scroll-behavior:smooth;
+}
+#timeline::-webkit-scrollbar{
+width:8px;
+}
+
+#timeline::-webkit-scrollbar-track{
+background:#16243c;
+border-radius:10px;
+}
+
+#timeline::-webkit-scrollbar-thumb{
+background:#35598c;
+border-radius:10px;
+}
+
+#timeline::-webkit-scrollbar-thumb:hover{
+background:#4ea1ff;
+}
+
+
+/* 时间线节点 */
+
+.timeline-item{
+padding:14px;
+margin-bottom:12px;
+background:#16243c;
+border-left:4px solid #2f7cff;
+border-radius:8px;
+}
+
+.timeline-risk{
+color:#ff7d7d;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- 左侧 -->
+<div class="sidebar">
+
+<div class="logo">
+SOC监测平台
+</div>
+
+<div class="menu-item">
+🏠 总览
+</div>
+
+<div class="menu-item active">
+👤 用户风险画像
+</div>
+
+</div>
+
+
+
+<!-- 主体 -->
+<div class="main">
+
+<div class="topbar">
+
+<div>
+<h2>用户行为风险画像</h2>
+<p style="margin-top:8px;color:#8ba5d7;">
+用户：{{ user_id }}
+</p>
+</div>
+
+<a class="back-btn" href="/">
+返回控制台
+</a>
+
+</div>
+
+
+
+<!-- 顶部指标 -->
+<div class="cards">
+
+<div class="card">
+<div class="card-title">
+攻击窗口数
+</div>
+<div class="card-value" id="attack_count">
+--
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">
+最高风险值
+</div>
+<div class="card-value" id="max_prob">
+--
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">
+风险等级
+</div>
+<div class="card-value" id="risk_level">
+--
+</div>
+</div>
+
+</div>
+
+
+
+<div class="grid">
+
+<!-- 行为曲线 -->
+<div class="panel">
+
+<h3>
+攻击行为趋势分析
+</h3>
+
+<div id="chart"></div>
+
+</div>
+
+
+<!-- 时间线 -->
+<div class="panel">
+
+<h3>
+攻击时间线取证
+</h3>
+
+<div id="timeline">
+
+<div class="timeline-item">
+等待加载行为序列...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+const user_id="{{ user_id }}";
+</script>
+
+<script src="/static/user.js"></script>
+
+</body>
+</html>
