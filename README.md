@@ -39,7 +39,7 @@ Flask Web 展示（趋势 / 告警 / 用户画像）
 
 ------
 
-![架构图.drawio (1)](https://fajiaoji-blog-picture.oss-cn-beijing.aliyuncs.com/2026/05/e2b02de216ec983c3e838f5672b2ab88.png)
+![未命名绘图-第 4 页.drawio](https://img.fajiaoji.xyz/2026/05/a1c4fcef2e9f4b7da7e53055ad3732f3.png)
 
 ## ⚙️ 核心功能
 
