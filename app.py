@@ -23,7 +23,7 @@ os.makedirs(UPLOAD_FOLDER,exist_ok=True)
 
 bcrypt=Bcrypt(app)
 
-THRESHOLD=0.5
+THRESHOLD=0.3
 
 
 # =========================
@@ -727,8 +727,15 @@ def set_threshold():
         row=cursor.fetchone()
         if not row:
             return jsonify({ "msg":"system not found" }),404
-            log_file=row[0]
-            path = "uploads/"+log_file
+        log_file=row[0]
+        path = "uploads/"+log_file
+        detect_and_store(
+            path,
+            system_name
+        )
+        return jsonify({
+            "msg":"threshold updated"
+        })
     finally:
         cursor.close()
         db.close()

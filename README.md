@@ -39,7 +39,7 @@ Flask Web 展示（趋势 / 告警 / 用户画像）
 
 ------
 
-![架构图.drawio (1)](D:\downloads\架构图.drawio (1).png)
+![架构图.drawio (1)](https://fajiaoji-blog-picture.oss-cn-beijing.aliyuncs.com/2026/05/e2b02de216ec983c3e838f5672b2ab88.png)
 
 ## ⚙️ 核心功能
 
@@ -211,13 +211,11 @@ http://127.0.0.1:5000/
 
 ------
 
-![image-20260430101109754](C:\Users\Tiant\AppData\Roaming\Typora\typora-user-images\image-20260430101109754.png)
+![屏幕截图 2026-05-19 110337](https://img.fajiaoji.xyz/2026/05/4ee01888a2af3b72c3f353e31f6b7f7c.png)
 
-![image-20260430101134591](C:\Users\Tiant\AppData\Roaming\Typora\typora-user-images\image-20260430101134591.png)
+![屏幕截图 2026-04-30 101131](https://img.fajiaoji.xyz/2026/05/00dcb40ce034242f82cc55b682031e2f.png)
 
-![image-20260430101204464](C:\Users\Tiant\AppData\Roaming\Typora\typora-user-images\image-20260430101204464.png)
-
-![image-20260430101221795](C:\Users\Tiant\AppData\Roaming\Typora\typora-user-images\image-20260430101221795.png)
+![屏幕截图 2026-04-30 101159](https://img.fajiaoji.xyz/2026/05/3a0ddb6bd41614497d8b89943ee58af4.png)
 
 ## 🔮 后续优化方向
 
